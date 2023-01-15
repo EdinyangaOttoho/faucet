@@ -1,0 +1,32 @@
+[package]
+name = "psp22_boilerplate"
+version = "0.9.6"
+authors = ["Edinyanga Ottoho <elzucky@gmail.com>"]
+edition = "2021"
+overflow-checks = false
+
+[dependencies]
+ink = { git = "https://github.com/paritytech/ink", rev = "4655a8b4413cb50cbc38d1b7c173ad426ab06cde", default-features = false}
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2", default-features = false, features = ["derive"], optional = true }
+
+openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", branch="main", default-features = false, features = ["psp22"] }
+
+[lib]
+name = "psp22_boilerplate"
+path = "lib.rs"
+crate-type = [
+    # Used for normal contract Wasm blobs.
+    "cdylib",
+]
+
+[features]
+default = ["std"]
+std = [
+    "ink/std",
+    "scale/std",
+    "scale-info/std",
+    "openbrush/std",
+]
+psp22 = ["openbrush/psp22"]
+ink-as-dependency = []
