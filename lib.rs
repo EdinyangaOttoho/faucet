@@ -1,29 +1,22 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ink_lang as ink;
-
 #[cfg(not(feature = "ink-as-dependency"))]
+
 #[ink::contract]
 pub mod faucetzero {
 
-    use ink_storage::traits::SpreadAllocate;
-
-    use ink_prelude::vec;
-    use ink_prelude::vec::Vec;
+    use ink::prelude::vec::Vec;
 
     use openbrush::contracts::traits::psp22::PSP22Ref;
 
-    use openbrush::{
-        storage::{
-            Mapping,
-            TypeGuard,
-        }
-    };
+    use openbrush::traits::Storage;
 
-    use ink_env::CallFlags;
+    use openbrush::storage::Mapping;
+
+    use ink::env::CallFlags;
 
     #[ink(storage)]
-    #[derive(SpreadAllocate)]
+    #[derive(Default, Storage)]
     pub struct Faucetzero {
         //Creator address
         owner: AccountId,
@@ -37,10 +30,13 @@ pub mod faucetzero {
         /// Creates a new instance of this contract.
         #[ink(constructor)]
         pub fn new() -> Self {
-            let me = ink_lang::utils::initialize_contract(|contract: &mut Self| {
-                contract.owner = Self::env().caller();
-            });
-            me
+            
+            let mut contract = Self::default();
+
+            contract.owner = Self::env().caller();
+            
+            contract
+
         }
 
         #[ink(message)]
@@ -86,7 +82,7 @@ pub mod faucetzero {
 
             assert!(amount_to_deposit >= amount_claimable);
 
-            if PSP22Ref::transfer_from_builder(&token, self.env().caller(), Self::env().account_id(), amount_to_deposit, ink_prelude::vec![]).call_flags(CallFlags::default().set_allow_reentry(true)).fire().expect("Transfer failed").is_err(){
+            if PSP22Ref::transfer_from_builder(&token, self.env().caller(), Self::env().account_id(), amount_to_deposit, ink::prelude::vec![]).call_flags(CallFlags::default().set_allow_reentry(true)).fire().expect("Transfer failed").is_err(){
                 panic!(
                     "Error in PSP22 transferFrom cross contract call function."
                 )
@@ -151,7 +147,7 @@ pub mod faucetzero {
 
             assert!(balance >= amount_claimable);
 
-            if PSP22Ref::transfer(&token, self.env().caller(), amount_claimable, ink_prelude::vec![]).is_err() {
+            if PSP22Ref::transfer(&token, self.env().caller(), amount_claimable, ink::prelude::vec![]).is_err() {
                 panic!(
                     "Error in PSP22 transfer cross contract call"
                 )
