@@ -2,7 +2,7 @@
 #![feature(min_specialization)]
 
 #[openbrush::contract]
-pub mod psp22_boilerplate {
+pub mod andromeda_token {
     use openbrush::traits::String;
     use ink::env::call::FromAccountId;
     
@@ -13,25 +13,25 @@ pub mod psp22_boilerplate {
 
     #[ink(storage)]
     #[derive(Default, Storage)]
-    pub struct Psp22Boilerplate {
+    pub struct AndromedaToken {
         #[storage_field]
         psp22: psp22::Data,
         #[storage_field]
         metadata: metadata::Data,
     }
 
-    impl PSP22 for Psp22Boilerplate {}
+    impl PSP22 for AndromedaToken {}
 
-    impl PSP22Metadata for Psp22Boilerplate {}
+    impl PSP22Metadata for AndromedaToken {}
 
-    impl Psp22Boilerplate {
+    impl AndromedaToken {
         #[ink(constructor)]
-        pub fn new(total_supply:Balance, name:String, symbol:String, decimals:u8) -> Self {
+        pub fn new(total_supply:Balance) -> Self {
             let mut instance = Self::default();
 
-            instance.metadata.name = Some(String::from(name));
-            instance.metadata.symbol = Some(String::from(symbol));
-            instance.metadata.decimals = decimals;
+            instance.metadata.name = Some(String::from("AndromedaSwap"));
+            instance.metadata.symbol = Some(String::from("ANS"));
+            instance.metadata.decimals = 12;
             instance
                 ._mint_to(instance.env().caller(), total_supply)
                 .expect("Should mint total_supply");
