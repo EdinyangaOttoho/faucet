@@ -29,4 +29,3 @@ std = [
     "openbrush/std",
 ]
 psp22 = ["openbrush/psp22"]
-ink-as-dependency = []
